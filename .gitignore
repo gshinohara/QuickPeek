@@ -1,0 +1,45 @@
+# Ignore Visual Studio specific files
+.vs/
+*.suo
+*.user
+*.vcxproj.user
+*.csproj.user
+
+# Ignore build outputs
+bin/
+obj/
+*.exe
+*.dll
+*.pdb
+
+# Ignore package-related files
+packages/
+.nuget/
+*.nupkg
+
+# Ignore temporary files
+*.tmp
+*.log
+*.bak
+
+# Ignore compiled Eto.Forms resources
+*.g.cs
+*.g.i.cs
+
+# Ignore Rhino plugin build outputs
+*.rhp
+*.rhi
+
+# Ignore user-specific settings
+*.config
+
+# Ignore Rider and JetBrains files
+.idea/
+*.sln.DotSettings.user
+
+# Ignore MacOS files
+.DS_Store
+
+# Ignore Python cache (if used for scripting)
+__pycache__/
+
