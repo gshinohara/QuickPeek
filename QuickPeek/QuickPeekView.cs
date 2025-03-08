@@ -4,15 +4,15 @@ using Eto.Forms;
 namespace QuickPeek
 {
     [System.Runtime.InteropServices.Guid("73FAE334-E8A7-4988-BDE8-AE397AC2633C")]
-    public class QuickPeekView: Panel
+    public class QuickPeekView : Panel
     {
         private QuickPeekViewModel m_ViewModel;
 
-        private TextArea m_ObjectNameBox;
-        private TextArea m_ColorBox;
-        private TextArea m_LayerNameBox;
-        private TextArea m_ObjectTypeBox;
-        private TextArea m_GuidBox;
+        private readonly TextArea m_ObjectNameBox = CreateTextArea();
+        private readonly TextArea m_ColorBox = CreateTextArea();
+        private readonly TextArea m_LayerNameBox = CreateTextArea();
+        private readonly TextArea m_ObjectTypeBox = CreateTextArea();
+        private readonly TextArea m_GuidBox = CreateTextArea();
 
         public QuickPeekView()
         {
@@ -24,55 +24,62 @@ namespace QuickPeek
 
         private void InitializeComponent()
         {
-            m_ObjectNameBox = new TextArea
-            {
-                ReadOnly = true,
-                Size = new Size(200, 40),
-                Wrap = true
-            };
-
-            m_ColorBox = new TextArea
-            {
-                ReadOnly = true,
-                Size = new Size(200, 40),
-                Wrap = true
-            };
-
-            m_LayerNameBox = new TextArea
-            {
-                ReadOnly = true,
-                Size = new Size(200, 40),
-                Wrap = true
-            };
-
-            m_ObjectTypeBox = new TextArea
-            {
-                ReadOnly = true,
-                Size = new Size(200, 40),
-                Wrap = true
-            };
-
-            m_GuidBox = new TextArea
-            {
-                ReadOnly = true,
-                Size = new Size(200, 40),
-                Wrap = true
-            };
-
             DynamicLayout layout = new DynamicLayout
             {
                 Padding = 10,
-                Spacing = new Size(5, 5)
+                Spacing = new Size(5, 5),
             };
-            Content = layout;
+            Content = new Scrollable
+            {
+                Content = layout,
+            };
 
             layout.AddSeparateRow(new Label { Text = "QuickPeek", Font = new Font(SystemFont.Bold, 12), TextAlignment = TextAlignment.Center });
-            layout.AddSeparateRow(new GroupBox { Text = "Name", Padding = 5, Content = m_ObjectNameBox });
-            layout.AddSeparateRow(new GroupBox { Text = "Color", Padding = 5, Content = m_ColorBox });
-            layout.AddSeparateRow(new GroupBox { Text = "Layer", Padding = 5, Content = m_LayerNameBox });
-            layout.AddSeparateRow(new GroupBox { Text = "Type", Padding = 5, Content = m_ObjectTypeBox });
-            layout.AddSeparateRow(new GroupBox { Text = "GUID", Padding = 5, Content = m_GuidBox });
+            layout.AddSeparateRow(CreateGroupBox("Name", m_ObjectNameBox));
+            layout.AddSeparateRow(CreateGroupBox("Color", m_ColorBox));
+            layout.AddSeparateRow(CreateGroupBox("Layer", m_LayerNameBox));
+            layout.AddSeparateRow(CreateGroupBox("Type", m_ObjectTypeBox));
+            layout.AddSeparateRow(CreateGroupBox("GUID", m_GuidBox));
             layout.AddSeparateRow(null);
+
+            SizeChanged += (sender, e) =>
+            {
+                m_ObjectNameBox.Width = Width - 80;
+                m_ColorBox.Width = Width - 80;
+                m_LayerNameBox.Width = Width - 80;
+                m_ObjectTypeBox.Width = Width - 80;
+                m_GuidBox.Width = Width - 80;
+            };
+        }
+
+        private static TextArea CreateTextArea()
+        {
+            TextArea textArea = new TextArea
+            {
+                ReadOnly = true,
+                Wrap = true,
+                Height = 60,
+            };
+            return textArea;
+        }
+
+        private static GroupBox CreateGroupBox(string text, TextArea content)
+        {
+            Button button = new Button { Text = "Copy" };
+            button.Click += (sender, e) => Clipboard.Instance.SetString(content.Text, string.Empty);
+
+            return new GroupBox
+            {
+                Text = text,
+                Padding = 5,
+                Content = new StackLayout
+                {
+                    Orientation = Orientation.Vertical,
+                    HorizontalContentAlignment = HorizontalAlignment.Center,
+                    Spacing = 5,
+                    Items = { content, button }
+                },
+            };
         }
 
         private void BindToViewModel()
