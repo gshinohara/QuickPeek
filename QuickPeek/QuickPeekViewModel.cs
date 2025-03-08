@@ -146,7 +146,7 @@ namespace QuickPeek
             foreach (RhinoObject obj in doc.Objects.GetSelectedObjects(true, false))
             {
                 ObjectName += $"{obj.Attributes.Name}\n";
-                Color += $"{obj.Attributes.ObjectColor.ToProperString()}\n";
+                Color += $"{obj.Attributes.DrawColor(doc).ToProperString()}\n";
                 LayerName += $"{doc.Layers.FindIndex(obj.Attributes.LayerIndex).FullPath}\n";
                 ObjectType += $"{obj.ObjectType.ToString()}\n";
                 Guid += $"{obj.Id.ToString()}\n";

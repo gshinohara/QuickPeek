@@ -22,7 +22,7 @@ namespace QuickPeek
                     return prop.Name;
             }
 
-            return $"#{color.R:X2}{color.G:X2}{color.B:X2}{color.A:X2}";
+            return ColorTranslator.ToHtml(color);
         }
 
         public static string GetBlockType(this InstanceDefinition instanceDefinition)
