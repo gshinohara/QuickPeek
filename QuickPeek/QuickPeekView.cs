@@ -8,11 +8,15 @@ namespace QuickPeek
     {
         private QuickPeekViewModel m_ViewModel;
 
-        private readonly TextArea m_ObjectNameBox = CreateTextArea();
-        private readonly TextArea m_ColorBox = CreateTextArea();
-        private readonly TextArea m_LayerNameBox = CreateTextArea();
-        private readonly TextArea m_ObjectTypeBox = CreateTextArea();
-        private readonly TextArea m_GuidBox = CreateTextArea();
+        private TextArea m_ObjectNameBox;
+        private TextArea m_ColorBox;
+        private TextArea m_LayerNameBox;
+        private TextArea m_ObjectTypeBox;
+        private TextArea m_GuidBox;
+        private TextArea m_BlockNameBox;
+        private TextArea m_BlockTypeBox;
+        private TextArea m_LayerStyleBox;
+        private TextArea m_SourceArchiveBox;
 
         public QuickPeekView()
         {
@@ -34,25 +38,52 @@ namespace QuickPeek
                 Content = layout,
             };
 
-            layout.AddSeparateRow(new Label { Text = "QuickPeek", Font = new Font(SystemFont.Bold, 12), TextAlignment = TextAlignment.Center });
-            layout.AddSeparateRow(CreateGroupBox("Name", m_ObjectNameBox));
-            layout.AddSeparateRow(CreateGroupBox("Color", m_ColorBox));
-            layout.AddSeparateRow(CreateGroupBox("Layer", m_LayerNameBox));
-            layout.AddSeparateRow(CreateGroupBox("Type", m_ObjectTypeBox));
-            layout.AddSeparateRow(CreateGroupBox("GUID", m_GuidBox));
-            layout.AddSeparateRow(null);
+            TabControl tabControl = new TabControl();
 
-            SizeChanged += (sender, e) =>
+            TabPage basicPage = CreateTabPage(
+                "Basic",
+                CreateUI("Name", out m_ObjectNameBox),
+                CreateUI("Color", out m_ColorBox),
+                CreateUI("Layer", out m_LayerNameBox),
+                CreateUI("Type", out m_ObjectTypeBox),
+                CreateUI("GUID", out m_GuidBox)
+                );
+            tabControl.Pages.Add(basicPage);
+
+            TabPage blockPage = CreateTabPage(
+                "Block",
+                CreateUI("Block Name", out m_BlockNameBox),
+                CreateUI("Block Type", out m_BlockTypeBox),
+                CreateUI("Layer Style", out m_LayerStyleBox),
+                CreateUI("Linked Block Path", out m_SourceArchiveBox)
+                );
+            tabControl.Pages.Add(blockPage);
+
+            layout.AddSeparateRow(new Label { Text = "QuickPeek", Font = new Font(SystemFont.Bold, 12), TextAlignment = TextAlignment.Center });
+            layout.AddSeparateRow(tabControl);
+            layout.AddSeparateRow(null);
+        }
+
+        private static TabPage CreateTabPage(string text,params GroupBox[] groups)
+        {
+            StackLayout layout = new StackLayout
             {
-                m_ObjectNameBox.Width = Width - 80;
-                m_ColorBox.Width = Width - 80;
-                m_LayerNameBox.Width = Width - 80;
-                m_ObjectTypeBox.Width = Width - 80;
-                m_GuidBox.Width = Width - 80;
+                Orientation = Orientation.Vertical,
+                HorizontalContentAlignment = HorizontalAlignment.Center,
+                Spacing = 5,
+            };
+
+            foreach (GroupBox group in groups)
+                layout.Items.Add(group);
+
+            return new TabPage
+            {
+                Text = text,
+                Content = layout,
             };
         }
 
-        private static TextArea CreateTextArea()
+        private GroupBox CreateUI(string text, out TextArea content)
         {
             TextArea textArea = new TextArea
             {
@@ -60,13 +91,11 @@ namespace QuickPeek
                 Wrap = true,
                 Height = 60,
             };
-            return textArea;
-        }
+            content = textArea;
+            this.SizeChanged += (s, e) => textArea.Width = this.Width - 80;
 
-        private static GroupBox CreateGroupBox(string text, TextArea content)
-        {
             Button button = new Button { Text = "Copy" };
-            button.Click += (sender, e) => Clipboard.Instance.SetString(content.Text, string.Empty);
+            button.Click += (sender, e) => Clipboard.Instance.SetString(textArea.Text, string.Empty);
 
             return new GroupBox
             {
@@ -77,7 +106,7 @@ namespace QuickPeek
                     Orientation = Orientation.Vertical,
                     HorizontalContentAlignment = HorizontalAlignment.Center,
                     Spacing = 5,
-                    Items = { content, button }
+                    Items = { textArea, button }
                 },
             };
         }
@@ -89,6 +118,10 @@ namespace QuickPeek
             m_LayerNameBox.BindDataContext(c => c.Text, (QuickPeekViewModel vm) => vm.LayerName);
             m_ObjectTypeBox.BindDataContext(c => c.Text, (QuickPeekViewModel vm) => vm.ObjectType);
             m_GuidBox.BindDataContext(c => c.Text, (QuickPeekViewModel vm) => vm.Guid);
+            m_BlockNameBox.BindDataContext(c => c.Text, (QuickPeekViewModel vm) => vm.BlockName);
+            m_BlockTypeBox.BindDataContext(c => c.Text, (QuickPeekViewModel vm) => vm.BlockType);
+            m_LayerStyleBox.BindDataContext(c => c.Text, (QuickPeekViewModel vm) => vm.LayerStyle);
+            m_SourceArchiveBox.BindDataContext(c => c.Text, (QuickPeekViewModel vm) => vm.SourceArchive);
         }
     }
 }

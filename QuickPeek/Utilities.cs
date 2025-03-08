@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Rhino.DocObjects;
+using System;
 using System.Drawing;
 using System.Linq;
 using System.Reflection;
@@ -24,12 +25,20 @@ namespace QuickPeek
             return $"#{color.R:X2}{color.G:X2}{color.B:X2}{color.A:X2}";
         }
 
-        private static double GetColorDistance(Color c1, Color c2)
+        public static string GetBlockType(this InstanceDefinition instanceDefinition)
         {
-            double rDiff = c1.R - c2.R;
-            double gDiff = c1.G - c2.G;
-            double bDiff = c1.B - c2.B;
-            return Math.Sqrt(rDiff * rDiff + gDiff * gDiff + bDiff * bDiff);
+            switch (instanceDefinition.UpdateType)
+            {
+                case InstanceDefinitionUpdateType.Static:
+                case InstanceDefinitionUpdateType.Embedded:
+                    return "Embeded";
+                case InstanceDefinitionUpdateType.LinkedAndEmbedded:
+                    return "Linked and Embeded";
+                case InstanceDefinitionUpdateType.Linked:
+                    return "Linked";
+                default:
+                    return "Undefined";
+            }
         }
     }
 }

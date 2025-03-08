@@ -12,6 +12,10 @@ namespace QuickPeek
         private string m_LayerName;
         private string m_ObjectType;
         private string m_Guid;
+        private string m_BlockName;
+        private string m_BlockType;
+        private string m_LayerStyle;
+        private string m_SourceArchive;
 
         public string ObjectName
         {
@@ -63,6 +67,46 @@ namespace QuickPeek
             }
         }
 
+        public string BlockName
+        {
+            get => m_BlockName;
+            set
+            {
+                m_BlockName = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string BlockType
+        {
+            get => m_BlockType;
+            set
+            {
+                m_BlockType = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string LayerStyle
+        {
+            get => m_LayerStyle;
+            set
+            {
+                m_LayerStyle = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string SourceArchive
+        {
+            get => m_SourceArchive;
+            set
+            {
+                m_SourceArchive = value;
+                OnPropertyChanged();
+            }
+        }
+
         public QuickPeekViewModel(QuickPeekView view)
         {
             Initialize();
@@ -106,12 +150,37 @@ namespace QuickPeek
                 LayerName += $"{doc.Layers.FindIndex(obj.Attributes.LayerIndex).FullPath}\n";
                 ObjectType += $"{obj.ObjectType.ToString()}\n";
                 Guid += $"{obj.Id.ToString()}\n";
+
+                if (obj is InstanceObject instanceObj)
+                    UpdateFromBlock(instanceObj);
+                else
+                {
+                    BlockName += "\n";
+                    BlockType += "\n";
+                    LayerStyle += "\n";
+                    SourceArchive += "\n";
+                }
             }
             ObjectName = ObjectName.Trim('\n');
             Color = Color.Trim('\n');
             LayerName = LayerName.Trim('\n');
             ObjectType = ObjectType.Trim('\n');
             Guid = Guid.Trim('\n');
+            BlockName = BlockName.Trim('\n');
+            BlockType = BlockType.Trim('\n');
+            LayerStyle = LayerStyle.Trim('\n');
+            SourceArchive = SourceArchive.Trim('\n');
+        }
+
+        private void UpdateFromBlock(InstanceObject blockInstance)
+        {
+            var instanceDef = blockInstance.InstanceDefinition;
+            if (instanceDef == null) return;
+
+            BlockName += $"{instanceDef.Name}\n";
+            BlockType += $"{instanceDef.GetBlockType()}\n";
+            LayerStyle += $"{instanceDef.LayerStyle}\n";
+            SourceArchive += $"{instanceDef.SourceArchive}\n";
         }
 
         private void Initialize()
@@ -121,6 +190,10 @@ namespace QuickPeek
             LayerName = string.Empty;
             ObjectType = string.Empty;
             Guid = string.Empty;
+            BlockName = string.Empty;
+            BlockType = string.Empty;
+            LayerStyle = string.Empty;
+            SourceArchive = string.Empty;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
