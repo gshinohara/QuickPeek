@@ -8,9 +8,6 @@
 # Ignore build outputs
 bin/
 obj/
-*.exe
-*.dll
-*.pdb
 
 # Ignore package-related files
 packages/
@@ -25,10 +22,6 @@ packages/
 # Ignore compiled Eto.Forms resources
 *.g.cs
 *.g.i.cs
-
-# Ignore Rhino plugin build outputs
-*.rhp
-*.rhi
 
 # Ignore user-specific settings
 *.config

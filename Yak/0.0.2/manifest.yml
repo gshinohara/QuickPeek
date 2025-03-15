@@ -1,0 +1,7 @@
+---
+name: QuickPeek
+version: 0.0.2
+authors:
+- Gaku Shinohara
+description: QuickPeek is a Rhino plugin that instantly displays object details like layer, name, color, type, and GUID. It also supports Linked Blocks, ensuring seamless workflow integration.
+url: https://github.com/gshinohara/QuickPeek

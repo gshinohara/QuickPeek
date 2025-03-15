@@ -1,6 +1,5 @@
 ﻿using Rhino.PlugIns;
 using Rhino.UI;
-using System.Drawing;
 
 namespace QuickPeek
 {
@@ -15,7 +14,7 @@ namespace QuickPeek
 
         protected override LoadReturnCode OnLoad(ref string errorMessage)
         {
-            Panels.RegisterPanel(this, typeof(QuickPeekView), "QuickPeek", SystemIcons.Shield);
+            Panels.RegisterPanel(this, typeof(QuickPeekView), "QuickPeek", Properties.Resources.QuickPeek);
             return base.OnLoad(ref errorMessage);
         }
     }
